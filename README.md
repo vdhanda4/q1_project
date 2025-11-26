@@ -20,8 +20,10 @@ The history module maintains a limited rolling window of recent conversation tur
 
 **State Management:**
 - The history module functions as a dedicated component attached to the workflow, maintaining a structured record of recent conversation turns. It operates independently of the main agent logic while remaining accessible to any step in the LangGraph workflow.
+  
 **Decoupled Capture:**
 - Lightweight hook functions are embedded within each workflow node to record intermediate outputs (classification, extracted entities, generated query, execution summary, etc.). These hooks are intentionally non-intrusive—capturing information without altering the state transitions or control flow of the agent.
+  
 **Rolling Window Memory:**
 - The system maintains a bounded history using a configurable FIFO buffer (default: 10 turns). When the buffer reaches capacity, the oldest turn is automatically removed, keeping memory usage stable and ensuring the history remains efficient and manageable.
 
