@@ -1,4 +1,4 @@
-# Helix Navigator
+# Persistent Memory for Multi-Step Biomedical Reasoning
 
 **Learn LangGraph and Knowledge Graphs through Biomedical AI**
 
@@ -29,6 +29,16 @@ An interactive educational project that teaches modern AI development through ha
 - **Anthropic Claude**: Language model
 - **Streamlit**: Interactive web interface
 - **LangGraph Studio**: Visual debugging
+  
+This project extends the base Helix Navigator agent with an internal conversation workflow history component. The goal of this addition is to track the sequence of operations the LangGraph workflow performs for each user query, creating a transparent record of recent interactions.
+The history module maintains a limited rolling window of recent conversation turns (default 10). For each turn, the agent stores the user question along with the intermediate outputs produced during the workflow—question classification, entity extraction, query generation, database execution summary, and the final formatted answer. These values are captured automatically through small hooks placed in each workflow node.
+
+**State Management:**
+- The history module functions as a dedicated component attached to the workflow, maintaining a structured record of recent conversation turns. It operates independently of the main agent logic while remaining accessible to any step in the LangGraph workflow.
+**Decoupled Capture:**
+- Lightweight hook functions are embedded within each workflow node to record intermediate outputs (classification, extracted entities, generated query, execution summary, etc.). These hooks are intentionally non-intrusive—capturing information without altering the state transitions or control flow of the agent.
+**Rolling Window Memory:**
+- The system maintains a bounded history using a configurable FIFO buffer (default: 10 turns). When the buffer reaches capacity, the oldest turn is automatically removed, keeping memory usage stable and ensuring the history remains efficient and manageable.
 
 ## Installation
 
@@ -44,7 +54,7 @@ cp .env.example .env
 
 # Load data and start
 pdm run load-data
-pdm run app
+pdm run app # runs with added memory summary
 ```
 
 ## Project Structure
@@ -60,6 +70,7 @@ pdm run app
 
 **Key Files**:
 - `src/agents/workflow_agent.py` - Main LangGraph agent
+- `src/agents/workflow_history.py` - Conversation workflow history module added
 - `src/web/app.py` - Interactive Streamlit interface
 - `docs/` - Complete documentation
 
@@ -68,7 +79,7 @@ pdm run app
 ### Basic Usage
 ```bash
 pdm run load-data         # Load biomedical data
-pdm run app              # Start web interface
+pdm run app              # Start web interface with memory addition
 ```
 
 ### Visual Debugging
