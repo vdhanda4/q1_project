@@ -98,6 +98,8 @@ pdm run app # runs with added memory summary
 │  get_history_summary()     # Format for UI display      │
 └─────────────────────────────────────────────────────────┘
 
+
+
 ## Running the Application
 
 ### Basic Usage
