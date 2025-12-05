@@ -15,17 +15,15 @@ An interactive educational project that teaches modern AI development through ha
 - **Biomedical Applications**: Apply AI to drug discovery and personalized medicine
 
 
-This project extends the base Helix Navigator agent with an internal conversation workflow history component. The goal of this addition is to track the sequence of operations the LangGraph workflow performs for each user query, creating a transparent record of recent interactions.
-The history module maintains a limited rolling window of recent conversation turns (default 10). For each turn, the agent stores the user question along with the intermediate outputs produced during the workflow—question classification, entity extraction, query generation, database execution summary, and the final formatted answer. These values are captured automatically through small hooks placed in each workflow node.
+## Key Contributions
 
-**State Management:**
-- The history module functions as a dedicated component attached to the workflow, maintaining a structured record of recent conversation turns. It operates independently of the main agent logic while remaining accessible to any step in the LangGraph workflow.
-  
-**Decoupled Capture:**
-- Lightweight hook functions are embedded within each workflow node to record intermediate outputs (classification, extracted entities, generated query, execution summary, etc.). These hooks are intentionally non-intrusive—capturing information without altering the state transitions or control flow of the agent.
-  
-**Rolling Window Memory:**
-- The system maintains a bounded history using a configurable FIFO buffer (default: 10 turns). When the buffer reaches capacity, the oldest turn is automatically removed, keeping memory usage stable and ensuring the history remains efficient and manageable.
+| Feature | Description |
+|---------|-------------|
+| `WorkflowHistory` class | Sliding window buffer (k=10) storing questions, entities, queries, and classifications |
+| Memory-augmented classification | Injects prior question-type pairs to recognize follow-up patterns |
+| Pronoun resolution | Injects recent entities into extraction prompts for coreference resolution |
+| Query chaining | Injects prior queries into generation prompts to preserve filters |
+| Conversation Memory UI | Sidebar panel displaying turn-by-turn history with entities and results |
 
 ## Quick Start
 
@@ -62,8 +60,13 @@ pdm run app # runs with added memory summary
 ## Project Structure
 
 ```
-├── src/agents/              # AI agent implementations
-├── src/web/app.py          # Interactive Streamlit interface
+├── src/
+│   ├── agents/
+│   │   ├── workflow_agent.py      # Main LangGraph agent with memory integration
+│   │   ├── workflow_history.py    # WorkflowHistory module
+│   │   └── graph_interface.py     # Neo4j database interface
+│   └── web/
+│       └── app.py                 # Streamlit interface with memory panel
 ├── docs/                   # Documentation and tutorials
 ├── data/                   # Biomedical datasets
 ├── scripts/                # Data loading utilities
