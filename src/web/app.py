@@ -21,7 +21,7 @@ demonstrating core LangGraph concepts without production complexity.
 import os
 import sys
 from pathlib import Path
-
+import time
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -349,11 +349,11 @@ def main_interface(workflow_agent, graph_interface):
         if st.button("Run Workflow Agent", type="primary"):
             if question_input:
                 with st.spinner("Running agent workflow..."):
+                    start_time = time.time()
                     result = workflow_agent.answer_question(question_input)
+                    elapsed = time.time() - start_time
 
-                st.success("Workflow Complete!")
-                st.subheader("Conversation Memory (Node-Level History)")
-                st.write(workflow_agent.history.get_summary())
+                st.success(f"Workflow Complete! ({elapsed:.2f}s)")
 
                 # Display detailed results for learning
                 col1, col2 = st.columns(2)
@@ -376,6 +376,21 @@ def main_interface(workflow_agent, graph_interface):
                 if result.get("raw_results"):
                     with st.expander("View Raw Database Results (First 3)"):
                         st.json(result["raw_results"])
+                # Conversation Memory Panel
+                with st.sidebar:
+                    st.subheader("Memory Controls")
+                    turn_count = len(workflow_agent.history)
+                    st.write(f"**Current Turn:** {turn_count}/10")
+                    
+                    st.divider()
+                    st.subheader("Conversation Memory")
+                    summary = workflow_agent.history.get_history_summary()
+                    st.markdown(summary)
+                    
+                    st.divider()
+                    if st.button("🗑️ Clear History"):
+                        st.session_state.clear_requested = True
+                        st.rerun()
             else:
                 st.warning("Please enter a question!")
 
@@ -435,6 +450,10 @@ def main_interface(workflow_agent, graph_interface):
 def main():
     # Initialize agents
     workflow_agent, graph_interface = initialize_agent()
+    if st.session_state.get("clear_requested"):
+        workflow_agent.history.turns = []
+        workflow_agent.history._current_turn = {}
+        st.session_state.clear_requested = False
 
     # Header
     st.title("Helix Navigator")
