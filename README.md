@@ -97,8 +97,7 @@ pdm run app # runs with added memory summary
 │  get_summary(k)            # Retrieve for query chain.  │
 │  get_history_summary()     # Format for UI display      │
 └─────────────────────────────────────────────────────────┘
-
-
+```
 
 ## Running the Application
 
