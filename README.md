@@ -25,6 +25,7 @@ An interactive educational project that teaches modern AI development through ha
 | Query chaining | Injects prior queries into generation prompts to preserve filters |
 | Conversation Memory UI | Sidebar panel displaying turn-by-turn history with entities and results |
 
+
 ## Quick Start
 
 1. **New to these concepts?** Read the [Foundations Guide](docs/foundations-and-background.md)
@@ -78,6 +79,24 @@ pdm run app # runs with added memory summary
 - `src/agents/workflow_history.py` - Conversation workflow history module added
 - `src/web/app.py` - Interactive Streamlit interface
 - `docs/` - Complete documentation
+
+## Memory System Architecture
+```
+┌─────────────────────────────────────────────────────────┐
+│                    WorkflowHistory                       │
+├─────────────────────────────────────────────────────────┤
+│  turns: List[Dict]         # Sliding window buffer      │
+│  _current_turn: Dict       # In-progress turn           │
+│  max_turns: int = 10       # Buffer capacity            │
+├─────────────────────────────────────────────────────────┤
+│  start_turn(question)      # Initialize new turn        │
+│  add_step(name, content)   # Record workflow step       │
+│  set_entities(entities)    # Store extracted entities   │
+│  finalize_turn()           # Commit turn to buffer      │
+│  get_recent_entities(k)    # Retrieve for pronoun res.  │
+│  get_summary(k)            # Retrieve for query chain.  │
+│  get_history_summary()     # Format for UI display      │
+└─────────────────────────────────────────────────────────┘
 
 ## Running the Application
 
