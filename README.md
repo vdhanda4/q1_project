@@ -15,7 +15,7 @@ An interactive educational project that teaches modern AI development through ha
 - **Biomedical Applications**: Apply AI to drug discovery and personalized medicine
 
 
-## Key Contributions
+## Key Contributions to Helix Navigator
 
 | Feature | Description |
 |---------|-------------|
@@ -76,14 +76,14 @@ pdm run app # runs with added memory summary
 
 **Key Files**:
 - `src/agents/workflow_agent.py` - Main LangGraph agent
-- `src/agents/workflow_history.py` - Conversation workflow history module added
+- `src/agents/workflow_history.py` - Conversation workflow history module ADDED
 - `src/web/app.py` - Interactive Streamlit interface
 - `docs/` - Complete documentation
 
 ## Memory System Architecture
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    WorkflowHistory                       │
+│                    WorkflowHistory                      │
 ├─────────────────────────────────────────────────────────┤
 │  turns: List[Dict]         # Sliding window buffer      │
 │  _current_turn: Dict       # In-progress turn           │
